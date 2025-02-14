@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeoProfile - Cyber Interface</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --neon-blue: #00f3ff;
+      --neon-purple: #13fea3;
+      --matrix-green: #0f0;
+      --cyber-black: #000814;
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at center, #001219 0%, #000 100%);
+      color: var(--neon-blue);
+      font-family: 'Orbitron', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* Cyber Navigation Bar */
+    .cyber-nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(0, 8, 20, 0.95);
+      border-bottom: 2px solid var(--neon-purple);
+      box-shadow: 0 0 30px rgba(188, 19, 254, 0.3);
+      z-index: 1000;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      font-size: 1.5rem;
+      text-decoration: none;
+      background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav-link {
+      color: #00ffb8;
+      text-decoration: none;
+      position: relative;
+      padding: 0.5rem 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--neon-blue);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::before {
+      width: 100%;
+    }
+
+    .nav-link:hover {
+      color: var(--neon-blue);
+      text-shadow: 0 0 10px var(--neon-blue);
+    }
+
+    /* Profile Card Enhancements */
+    .profile-card {
+      margin-top: 100px;
+      position: relative;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      background: rgba(0, 18, 25, 0.95);
+      border: 3px solid var(--neon-blue);
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 0 50px rgba(0, 243, 255, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .avatar {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin: 0 auto 2rem;
+      position: relative;
+      border: 3px solid var(--neon-purple);
+      box-shadow: 0 0 30px rgba(188, 19, 254, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .avatar:hover {
+      transform: scale(1.05) rotate(5deg);
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .name {
+      text-align: center;
+      font-size: 2.5rem;
+      background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 1rem;
+    }
+
+    .title {
+      text-align: center;
+      color: #00ffb8;
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Parking History Enhancements */
+    .parking-history-box {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: rgba(0, 18, 25, 0.95);
+      border: 3px solid var(--neon-blue);
+      border-radius: 15px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .parking-history-box h3 {
+      color: var(--neon-purple);
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+    }
+
+    .parking-history-box ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .parking-history-box li {
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      background: rgba(0, 243, 255, 0.05);
+      border: 1px solid var(--neon-blue);
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .parking-history-box li:hover {
+      transform: translateX(10px);
+      box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+    }
+
+    .details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+
+    .label {
+      color: var(--neon-purple);
+      font-weight: bold;
+      margin-right: 0.5rem;
+    }
+
+    /* Particle Background */
+    #particles-js {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+  <!-- Cyber Navigation Bar -->
+  <nav class="cyber-nav">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">NEO<span style="color: var(--neon-purple)">PROFILE</span></a>
+      <div class="nav-links">
+        <a href="/" class="nav-link"><i class="fas fa-home"></i> Home</a>
+        <a href="/profile" class="nav-link"><i class="fas fa-id-card"></i> Profile</a>
+        <a href="reservation.html" class="nav-link"><i class="fas fa-history"></i> Reservations</a>
+        <a href="/logout" class="nav-link"><i class="fas fa-power-off"></i> Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Profile Card -->
+  <div class="profile-card">
+    <div class="card-content">
+      <div class="avatar">
+        <img src="https://wallpapers.com/images/hd/cool-profile-picture-minion-13pu7815v42uvrsg.jpg" alt="Profile Picture">
+      </div>
+      <h2 class="name">Somil Kotnala</h2>
+      <p class="title">Welcome</p>
+    </div>
+  </div>
+
+  <!-- Parking History Box -->
+  <div class="parking-history-box">
+    <div>
+      <h3><i class="fas fa-clock"></i> Temporal Parking History</h3>
+      <ul>
+        {% for reservation in reservations %}
+        <li>
+            <div class="details">
+                <div><span class="label"><i class="fas fa-map-marker"></i> Location:</span> {{ reservation.location }}</div>
+                <div><span class="label"><i class="fas fa-calendar-day"></i> Date:</span> {{ reservation.datetime.split('T')[0] }}</div>
+                <div><span class="label"><i class="fas fa-clock"></i> Time:</span> {{ reservation.datetime[11:16] }}</div>
+                <div><span class="label"><i class="fas fa-hourglass"></i> Duration:</span> {{ reservation.duration }}m</div>
+                <div><span class="label"><i class="fas fa-coins"></i> Cost:</span> ${{ "%.2f"|format(reservation.cost) }}</div>
+                <div><span class="label"><i class="fas fa-car"></i> Vehicle:</span> {{ reservation.vehicle }}</div>
+            </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <!-- Particle.js Container -->
+  <div id="particles-js"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 80 },
+        color: { value: '#00f3ff' },
+        shape: { type: 'circle' },
+        opacity: { value: 0.5 },
+        size: { value: 3 },
+        move: {
+          enable: true,
+          speed: 2,
+          direction: 'none',
+          random: true,
+          straight: false,
+          out_mode: 'out',
+          bounce: false,
+        }
+      },
+      interactivity: {
+        detect_on: 'canvas',
+        events: {
+          onhover: { enable: true, mode: 'repulse' },
+          onclick: { enable: true, mode: 'push' },
+          resize: true
+        }
+      },
+      retina_detect: true
+    });
+  </script>
+</body>
+</html>

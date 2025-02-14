@@ -1,0 +1,247 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: #110e0e;
+    font-family: 'Arial', sans-serif;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  /* Particle.js Background */
+  #particles-js {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+  }
+  
+  /* Profile Card */
+  .profile-card {
+    position: relative;
+    width: 300px;
+    height: 400px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+    backdrop-filter: blur(10px);
+    border: 2px solid transparent;
+    animation: neon-border 2s infinite alternate;
+    margin-bottom: 20px; /* Space between profile card and parking history */
+  }
+  
+  @keyframes neon-border {
+    0% {
+      border-color: rgba(0, 255, 255, 0.2);
+    }
+    100% {
+      border-color: rgba(0, 255, 255, 1);
+    }
+  }
+  
+  .profile-card:hover {
+    transform: scale(1.05) rotateY(10deg);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+  }
+  
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .avatar img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 5px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.5s ease, border-color 0.5s ease;
+  }
+  
+  .avatar img:hover {
+    transform: rotate(360deg);
+    border-color: rgba(0, 255, 255, 0.8);
+  }
+  
+  .name {
+    font-size: 24px;
+    margin-top: 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: glow 2s infinite alternate;
+  }
+  
+  @keyframes glow {
+    0% {
+      text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff;
+    }
+    100% {
+      text-shadow: 0 0 20px #0ff, 0 0 30px #0ff, 0 0 40px #0ff;
+    }
+  }
+  
+  .title {
+    font-size: 16px;
+    margin-top: 10px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .social-links {
+    margin-top: 30px;
+  }
+  
+  .social-link {
+    display: inline-block;
+    margin: 0 10px;
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .social-link:hover {
+    color: #0ff;
+    transform: translateY(-5px);
+  }
+  
+  /* Parking History Box */
+/* Parking History Box */
+/* Parking History Box */
+.parking-history-box {
+    width: 693px;
+    max-height: 250px; /* Set a maximum height for the box */
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 20px; /* Outer padding for the box */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    border: 2px solid transparent;
+    animation: neon-border 2s infinite alternate;
+    transition: transform 0.5s ease, box-shadow 0.5s ease; /* Smooth transition */
+    overflow: hidden; /* Hide overflow on the outer container */
+  }
+  
+  /* Inner Scrollable Container */
+  .parking-history-box > div {
+    max-height: 210px; /* Adjusted height to account for padding */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding-right: 20px; /* Add space between content and scrollbar */
+    box-sizing: content-box; /* Ensure padding doesn't affect the width */
+  }
+  
+  .parking-history-box:hover {
+    transform: scale(1.05) rotateY(10deg); /* Scale and tilt on hover */
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7); /* Stronger shadow */
+  }
+  
+  .parking-history-box h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #0ff;
+  }
+  
+  .parking-history-box ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .parking-history-box li {
+    font-size: 14px;
+    margin-bottom: 8px; /* Add spacing between list items */
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .parking-history-box span {
+    font-weight: bold;
+    color: #0ff;
+  }
+  
+  /* Custom Scrollbar Styling */
+  .parking-history-box::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+  }
+  
+  .parking-history-box::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1); /* Track color */
+    border-radius: 10px;
+  }
+  
+  .parking-history-box::-webkit-scrollbar-thumb {
+    background: #0ff; /* Thumb color */
+    border-radius: 10px;
+  }
+  
+  .parking-history-box::-webkit-scrollbar-thumb:hover {
+    background: #0ff; /* Hover effect for the thumb */
+  }
+
+  .score-breakdown {
+    font-size: 0.9em;
+    margin: 10px 0;
+    padding: 10px;
+    background: rgba(0, 243, 255, 0.1);
+    border-radius: 5px;
+}
+
+.score-breakdown div {
+    margin: 5px 0;
+}
+/* AI-Specific Styles */
+.ai-score {
+  color: #df11fc;
+  font-size: 0.8em;
+  margin: 10px 0;
+}
+
+.ai-indicator {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 1.2em;
+  opacity: 0.7;
+}
+
+.ai-indicator.active {
+  animation: ai-pulse 1.5s infinite;
+  opacity: 1;
+}
+
+@keyframes ai-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.score-breakdown {
+  background: rgba(0, 243, 255, 0.1);
+  padding: 8px;
+  border-radius: 4px;
+  margin: 10px 0;
+  border: 1px solid var(--neon-blue);
+}
+
+.score-breakdown div {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8em;
+  margin: 3px 0;
+}

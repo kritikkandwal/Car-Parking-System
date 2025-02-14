@@ -1,0 +1,309 @@
+<!-- templates/index.html (Futuristic UI) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoPark - Smart Parking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto:wght@300;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-pink: #df1111;
+            --cyber-green: #0f0;
+            --dark-bg: #0a0a12;
+            --cyber-yellow: #fce67a;
+        }
+
+        body {
+            background: linear-gradient(45deg, var(--dark-bg) 0%, #1a1a2f 100%);
+            color: white;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .cyber-font {
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+        
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--neon-blue);
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li a {
+            display: block;
+            color: var(--neon-blue);
+            text-align: center;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            background: rgba(0, 243, 255, 0.1);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+        .header {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 2px solid var(--neon-blue);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .parking-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            perspective: 1000px;
+        }
+
+        .slot {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .slot::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, 
+                transparent 45%, 
+                var(--neon-blue) 50%, 
+                transparent 55%);
+            animation: scan 4s infinite linear;
+            opacity: 0.3;
+        }
+
+        .slot.free { border: 2px solid var(--cyber-green); }
+        .slot.reserved { border: 2px solid var(--neon-blue); }
+        .slot.occupied { border: 2px solid var(--neon-pink); }
+
+        .slot:hover {
+            transform: translateY(-5px) rotateX(5deg);
+            box-shadow: 0 10px 20px rgba(0, 243, 255, 0.2);
+        }
+
+        .slot-type {
+            color: var(--cyber-yellow);
+            font-size: 0.8em;
+            margin: 5px 0;
+        }
+
+        .slot-price {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-blue);
+            margin: 5px 0;
+        }
+
+        .hud-panel {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--neon-blue);
+            border-radius: 10px;
+            padding: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(-100%) rotate(45deg); }
+            100% { transform: translateY(100%) rotate(45deg); }
+        }
+
+        .recommendation-card {
+            background: linear-gradient(45deg, #001a33 0%, #000d1a 100%);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--neon-blue);
+            border-radius: 8px;
+        }
+
+        .reservation-timer {
+            color: var(--neon-pink);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 0.4; }
+            100% { opacity: 0.8; }
+        }
+
+        /* New Button Styles */
+        .cyber-button {
+            background: var(--neon-blue);
+            border: none;
+            padding: 10px 25px;
+            color: black;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+        }
+
+        .cyber-button:hover {
+            background: var(--cyber-green);
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="#home">HOME</a></li>
+            <li><a href="#map">LIVE MAP</a></li>
+            <li><a href="reservation.html">RESERVATIONS</a></li>
+            <li><a href="profile.html">PROFILE</a></li>
+        </ul>
+    </nav>
+    <div class="header">
+        <h1 class="cyber-font">🆂🆆🅸🅵🆃🅿🅰🆁🅺</h1>
+        <p class="cyber-font">Smart Parking System 2K</p>
+    </div>
+
+    <div class="dashboard">
+        <div class="parking-grid" id="parkingGrid"></div>
+        
+        <div class="hud-panel">
+            <h3 class="cyber-font">RECOMMENDED SLOT</h3>
+            <div id="recommendation" class="recommendation-card">
+                <div class="slot-type pulse">CALCULATING...</div>
+            </div>
+            
+            <h3 class="cyber-font">SELECTED SLOT</h3>
+            <div id="slotDetails" class="recommendation-card"></div>
+            <button id="reserveButton" class="cyber-button" style="display: none; margin-top: 15px;">RESERVE NOW</button>
+        </div>
+    </div>
+
+    <script>
+        async function fetchParkingData() {
+            const response = await fetch('/parking-data');
+            const data = await response.json();
+            updateUI(data);
+        }
+
+        function updateUI(data) {
+            const grid = document.getElementById('parkingGrid');
+            grid.innerHTML = '';
+            
+            const bestSlot = data[0];
+            document.getElementById('recommendation').innerHTML = `
+                <div class="cyber-font">#${bestSlot.id}</div>
+                <div class="slot-type">${bestSlot.type}</div>
+                <div class="slot-price">$${bestSlot.price}/hr</div>
+            `;
+            
+            data.forEach(slot => {
+                const slotEl = document.createElement('div');
+                slotEl.className = `slot ${slot.status}`;
+                slotEl.innerHTML = `<div class="cyber-font">#${slot.id}</div>`;
+                grid.appendChild(slotEl);
+            });
+        }
+        function updateUI(data) {
+            const grid = document.getElementById('parkingGrid');
+            grid.innerHTML = '';
+            
+            // Update recommendations
+            const bestSlot = data[0];
+            document.getElementById('recommendation').innerHTML = `
+                <div class="cyber-font">#${bestSlot.id}</div>
+                <div class="slot-type">${bestSlot.type}</div>
+                <div class="slot-price">$${bestSlot.price}/hr</div>
+                <div>${bestSlot.distance}m from entrance</div>
+            `;
+
+            // Create parking slots
+            data.forEach(slot => {
+                const slotEl = document.createElement('div');
+                slotEl.className = `slot ${slot.status}`;
+                slotEl.innerHTML = `
+                    <div class="cyber-font">#${slot.id}</div>
+                    <div class="slot-type">${slot.type}</div>
+                    <div class="slot-price">$${slot.price}/hr</div>
+                    <div>${slot.distance}m</div>
+                    ${slot.status === 'free' ? 
+                        '<button class="reserve-btn" onclick="reserveSlot('+slot.id+')">RESERVE</button>' : 
+                        '<div class="status">'+slot.status.toUpperCase()+'</div>'}
+                `;
+                slotEl.onclick = () => showSlotDetails(slot);
+                grid.appendChild(slotEl);
+            });
+        }
+
+        function showSlotDetails(slot) {
+            const details = document.getElementById('slotDetails');
+            const reserveBtn = document.getElementById('reserveButton');
+            
+            details.innerHTML = `
+                <div class="cyber-font">SLOT #${slot.id}</div>
+                <div>Type: ${slot.type}</div>
+                <div>Status: ${slot.status.toUpperCase()}</div>
+                <div>Price: $${slot.price}/hr</div>
+                <div>Distance: ${slot.distance}m</div>
+                ${slot.covered ? '<div>Covered Parking</div>' : ''}
+            `;
+            
+            reserveBtn.style.display = slot.status === 'free' ? 'block' : 'none';
+            reserveBtn.onclick = () => {
+                window.location.href = `/reservation.html?slot=${slot.id}`;
+            };
+        }
+
+        async function reserveSlot(slotId) {
+            const response = await fetch(`/reserve/${slotId}`);
+            const result = await response.json();
+            if(result.status === 'success') {
+                alert(`Slot #${slotId} reserved until ${new Date(result.until * 1000).toLocaleTimeString()}`);
+                fetchParkingData();
+            }
+        }
+
+        async function fetchParkingData() {
+            const response = await fetch('/parking-data');
+            const data = await response.json();
+            updateUI(data);
+        }
+
+        // Update every 3 seconds
+        setInterval(fetchParkingData, 3000);
+        fetchParkingData();
+    </script>
+</body>
+</html>

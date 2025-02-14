@@ -1,0 +1,333 @@
+<!-- templates/reservation.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NeoPark - Quantum Reservation</title>
+    <link href="/styles.css" rel="stylesheet">
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-purple: #bc13fe;
+            --matrix-green: #0f0;
+            --hologram-alpha: 0.65;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #001219 0%, #000 100%);
+            overflow-x: hidden;
+        }
+
+        .reservation-container {
+            position: relative;
+            max-width: 800px;
+            margin: 5vh auto;
+            padding: 2rem 3rem;
+            background: rgba(0, 18, 25, 0.95);
+            border: 3px solid var(--neon-blue);
+            border-radius: 15px;
+            box-shadow: 0 0 50px rgba(0, 243, 255, 0.3);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            overflow: hidden;
+        }
+
+        .reservation-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, 
+                transparent 45%, 
+                rgba(0, 243, 255, 0.1) 50%, 
+                transparent 55%);
+            animation: hologram 8s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes hologram {
+            0% { transform: rotate(0deg) translateZ(-1px); }
+            100% { transform: rotate(360deg) translateZ(-1px); }
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, var(--neon-blue), #6851fe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(188, 19, 254, 0.5);
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        h1::after {
+            content: 'QUANTUM PARKING INTERFACE';
+            position: absolute;
+            bottom: -1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: rgba(0, 0, 0, 0.7);
+            opacity: 0.8;
+            filter: drop-shadow(0 0 5px #ffffffa6);
+        }
+
+        .reservation-form {
+            display: grid;
+            gap: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .form-input {
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid var(--neon-blue);
+            padding: 15px 20px;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 0 10px rgba(0, 243, 255, 0.1);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 20px rgba(188, 19, 254, 0.3),
+                        inset 0 0 15px rgba(0, 243, 255, 0.2);
+        }
+
+        .time-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .time-bubble {
+            padding: 1.5rem;
+            border: 2px solid var(--neon-blue);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: rgba(0, 0, 0, 0.7);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .time-bubble::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: radial-gradient(circle, 
+                rgba(0, 243, 255, 0.2) 0%, 
+                transparent 70%);
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .time-bubble:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
+        }
+
+        .time-bubble.selected {
+            background: linear-gradient(145deg, var(--neon-blue), #230e0e);
+            color: #000;
+            border-color: transparent;
+            box-shadow: 0 0 40px rgba(188, 19, 254, 0.4);
+            transform: scale(1.05);
+        }
+
+        .time-bubble.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            color: #000;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(0, 243, 255, 0.5);
+        }
+
+        .cyber-button {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, var(--neon-blue) 30%, #3d41af 70%);
+            border: none;
+            border-radius: 5px;
+            color: #000;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .cyber-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, 
+                transparent 45%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                transparent 55%);
+            animation: buttonScan 3s infinite linear;
+        }
+
+        @keyframes buttonScan {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .cyber-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 50px rgba(188, 19, 254, 0.5);
+        }
+
+        /* Background effects */
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: -1;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="cyber-grid"></div>
+    <div class="particles" id="particles"></div>
+    
+    <div class="reservation-container">
+        <h1>NEOPARK RESERVATION PAGE</h1>
+        <form id="reservationForm" class="reservation-form">
+            <input type="text" class="form-input" id="slotId" readonly 
+                   style="text-align: center; font-size: 1.3rem; letter-spacing: 2px;">
+            <input type="text" class="form-input" placeholder="OPERATOR IDENTIFICATION" required>
+            <input type="text" class="form-input" placeholder="VEHICLE NEURAL IMPRINT" required>
+            <div class="time-selector">
+                <div class="time-bubble" data-minutes="30">
+                    <div class="time-label">30 MIN</div>
+                    <div class="time-sub">QUICK ACCESS</div>
+                </div>
+                <div class="time-bubble" data-minutes="60">
+                    <div class="time-label">1 HOUR</div>
+                    <div class="time-sub">STANDARD CYCLE</div>
+                </div>
+                <div class="time-bubble" data-minutes="120">
+                    <div class="time-label">2 HOURS</div>
+                    <div class="time-sub">EXTENDED DOCKING</div>
+                </div>
+            </div>
+            <button type="submit" class="cyber-button">INITIATE QUANTUM LOCK</button>
+        </form>
+    </div>
+
+    <script>
+        // Particle animation
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for(let i = 0; i < 100; i++) {
+                const particle = document.createElement('div');
+                particle.style.cssText = `
+                    position: absolute;
+                    width: 2px;
+                    height: 2px;
+                    background: rgba(0, 243, 255, ${Math.random() * 0.5});
+                    border-radius: 50%;
+                    animation: particle ${5 + Math.random() * 10}s infinite linear;
+                `;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                const keyframes = `
+                    @keyframes particle {
+                        0% { transform: translate(0, 0); opacity: ${Math.random()}; }
+                        100% { transform: translate(${Math.random() * 400 - 200}px, ${Math.random() * 400 - 200}px); opacity: 0; }
+                    }
+                `;
+                
+                const style = document.createElement('style');
+                style.appendChild(document.createTextNode(keyframes));
+                document.head.appendChild(style);
+                
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Existing functionality with enhanced feedback
+        const urlParams = new URLSearchParams(window.location.search);
+        const slotId = urlParams.get('slot');
+        document.getElementById('slotId').value = `⌖ GRID LOCK: SECTOR-${String(slotId).padStart(3, '0')}`;
+
+        document.querySelectorAll('.time-bubble').forEach(bubble => {
+            bubble.addEventListener('click', () => {
+                document.querySelectorAll('.time-bubble').forEach(b => {
+                    b.classList.remove('selected');
+                    b.style.transform = '';
+                });
+                bubble.classList.add('selected');
+                bubble.style.transform = 'perspective(1000px) rotateX(10deg) rotateY(-10deg)';
+            });
+        });
+
+        document.getElementById('reservationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            // Add submission animation
+            document.querySelector('.cyber-button').style.background = 'linear-gradient(45deg, #00ff88, #00f3ff)';
+            
+            // Existing submission logic
+            const reservationData = {
+                slotId: slotId,
+                name: e.target[1].value,
+                vehicle: e.target[2].value,
+                duration: document.querySelector('.time-bubble.selected')?.dataset.minutes || '30'
+            };
+
+            const response = await fetch('/submit-reservation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(reservationData)
+            });
+
+            if(response.ok) {
+                // Add success animation
+                document.querySelector('.reservation-container').style.animation = 'successPulse 1s ease';
+                setTimeout(() => {
+                    window.location.href = '/profile.html';
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
