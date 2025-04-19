@@ -1,6 +1,7 @@
 <!-- templates/reservation.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>NeoPark - Quantum Reservation</title>
@@ -39,17 +40,22 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(45deg, 
-                transparent 45%, 
-                rgba(0, 243, 255, 0.1) 50%, 
-                transparent 55%);
+            background: linear-gradient(45deg,
+                    transparent 45%,
+                    rgba(0, 243, 255, 0.1) 50%,
+                    transparent 55%);
             animation: hologram 8s infinite linear;
             pointer-events: none;
         }
 
         @keyframes hologram {
-            0% { transform: rotate(0deg) translateZ(-1px); }
-            100% { transform: rotate(360deg) translateZ(-1px); }
+            0% {
+                transform: rotate(0deg) translateZ(-1px);
+            }
+
+            100% {
+                transform: rotate(360deg) translateZ(-1px);
+            }
         }
 
         h1 {
@@ -65,10 +71,46 @@
             position: relative;
         }
 
+        h1 {
+            font-size: 2rem;
+            /* Reduced font size */
+            margin-bottom: 1.5rem;
+            /* Reduced margin */
+            top: -16px;
+        }
+
+        .form-input {
+            padding: 10px 15px;
+            /* Reduced padding */
+            font-size: 1rem;
+            /* Reduced font size */
+        }
+
+        .time-bubble {
+            padding: 1rem;
+            /* Reduced padding */
+            font-size: 0.9rem;
+            /* Reduced font size */
+        }
+
+        .cyber-button {
+            padding: 1rem;
+            /* Reduced padding */
+            font-size: 1rem;
+            /* Reduced font size */
+            margin-top: 1.5rem;
+            /* Reduced margin */
+        }
+
+        .reservation-container {
+            padding: 2rem 2.5rem;
+            /* Adjusted padding */
+        }
+
         h1::after {
             content: 'QUANTUM PARKING INTERFACE';
             position: absolute;
-            bottom: -1.5rem;
+            bottom: -35.5px;
             left: 50%;
             transform: translateX(-50%);
             font-size: 0.8rem;
@@ -79,7 +121,7 @@
 
         .reservation-form {
             display: grid;
-            gap: 1.5rem;
+            gap: 9.5px;
             position: relative;
             z-index: 2;
         }
@@ -99,7 +141,7 @@
             outline: none;
             border-color: var(--neon-purple);
             box-shadow: 0 0 20px rgba(188, 19, 254, 0.3),
-                        inset 0 0 15px rgba(0, 243, 255, 0.2);
+                inset 0 0 15px rgba(0, 243, 255, 0.2);
         }
 
         .time-selector {
@@ -128,9 +170,9 @@
             left: 50%;
             width: 300%;
             height: 300%;
-            background: radial-gradient(circle, 
-                rgba(0, 243, 255, 0.2) 0%, 
-                transparent 70%);
+            background: radial-gradient(circle,
+                    rgba(0, 243, 255, 0.2) 0%,
+                    transparent 70%);
             transform: translate(-50%, -50%);
             opacity: 0;
             transition: opacity 0.3s ease;
@@ -161,7 +203,7 @@
 
         .cyber-button {
             margin-top: 2rem;
-            padding: 1.5rem;
+            padding: 17.5px;
             font-size: 1.2rem;
             letter-spacing: 2px;
             background: linear-gradient(45deg, var(--neon-blue) 30%, #3d41af 70%);
@@ -181,16 +223,21 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(45deg, 
-                transparent 45%, 
-                rgba(255, 255, 255, 0.1) 50%, 
-                transparent 55%);
+            background: linear-gradient(45deg,
+                    transparent 45%,
+                    rgba(255, 255, 255, 0.1) 50%,
+                    transparent 55%);
             animation: buttonScan 3s infinite linear;
         }
 
         @keyframes buttonScan {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .cyber-button:hover {
@@ -205,7 +252,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-image: 
+            background-image:
                 linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
             background-size: 30px 30px;
@@ -223,15 +270,25 @@
         }
     </style>
 </head>
+
 <body>
     <div class="cyber-grid"></div>
     <div class="particles" id="particles"></div>
-    
+
     <div class="reservation-container">
         <h1>NEOPARK RESERVATION PAGE</h1>
+        <!-- In reservation.html -->
+        <div class="balance-display cyber-font" style="position: fixed; top: 62px;
+        right: 546px;
+        padding: 1px 5px;
+       background: rgb(63 55 55 / 70%); border: 2px solid #00f3ff;
+       border-radius: 5px; box-shadow: 0 0 15px rgba(0,243,255,0.3);">
+            BALANCE: ${{ "%.2f"|format(user_balance) }}
+        </div>
+
         <form id="reservationForm" class="reservation-form">
-            <input type="text" class="form-input" id="slotId" readonly 
-                   style="text-align: center; font-size: 1.3rem; letter-spacing: 2px;">
+            <input type="text" class="form-input" id="slotId" readonly
+                style="text-align: center; font-size: 1.3rem; letter-spacing: 2px;">
             <input type="text" class="form-input" placeholder="OPERATOR IDENTIFICATION" required>
             <input type="text" class="form-input" placeholder="VEHICLE NEURAL IMPRINT" required>
             <div class="time-selector">
@@ -248,15 +305,20 @@
                     <div class="time-sub">EXTENDED DOCKING</div>
                 </div>
             </div>
-            <button type="submit" class="cyber-button">INITIATE QUANTUM LOCK</button>
+            <button type="button" id="doneButton" class="cyber-button">DONE</button>
+            <div id="paypal-button-container"></div>
         </form>
     </div>
+
+    <script
+        src="https://www.paypal.com/sdk/js?client-id=AdlIwDGFA9Qeh6ySK6M1yLXi_8YWMFjeD0GS2472t2Gx7dVL0N-KFAKWsdzdNLPXuPRpCe241Rg4dncx&currency=USD"></script>
+
 
     <script>
         // Particle animation
         function createParticles() {
             const container = document.getElementById('particles');
-            for(let i = 0; i < 100; i++) {
+            for (let i = 0; i < 100; i++) {
                 const particle = document.createElement('div');
                 particle.style.cssText = `
                     position: absolute;
@@ -268,18 +330,18 @@
                 `;
                 particle.style.left = `${Math.random() * 100}%`;
                 particle.style.top = `${Math.random() * 100}%`;
-                
+
                 const keyframes = `
                     @keyframes particle {
                         0% { transform: translate(0, 0); opacity: ${Math.random()}; }
                         100% { transform: translate(${Math.random() * 400 - 200}px, ${Math.random() * 400 - 200}px); opacity: 0; }
                     }
                 `;
-                
+
                 const style = document.createElement('style');
                 style.appendChild(document.createTextNode(keyframes));
                 document.head.appendChild(style);
-                
+
                 container.appendChild(particle);
             }
         }
@@ -305,7 +367,7 @@
             e.preventDefault();
             // Add submission animation
             document.querySelector('.cyber-button').style.background = 'linear-gradient(45deg, #00ff88, #00f3ff)';
-            
+
             // Existing submission logic
             const reservationData = {
                 slotId: slotId,
@@ -320,7 +382,7 @@
                 body: JSON.stringify(reservationData)
             });
 
-            if(response.ok) {
+            if (response.ok) {
                 // Add success animation
                 document.querySelector('.reservation-container').style.animation = 'successPulse 1s ease';
                 setTimeout(() => {
@@ -328,6 +390,105 @@
                 }, 1000);
             }
         });
+        let currentSlot = null;
+        let selectedDuration = 30;
+
+        // Fetch slot details on load
+        fetch(`/slot/${slotId}`)
+            .then(response => response.json())
+            .then(slot => {
+                currentSlot = slot;
+                renderPayPalButton();
+            });
+
+        // Update duration selection
+        document.querySelectorAll('.time-bubble').forEach(bubble => {
+            bubble.addEventListener('click', () => {
+                selectedDuration = parseInt(bubble.dataset.minutes);
+                renderPayPalButton();
+                document.querySelectorAll('.time-bubble').forEach(b => b.classList.remove('selected'));
+                bubble.classList.add('selected');
+            });
+        });
+
+        document.getElementById('doneButton').addEventListener('click', async () => {
+            const operatorId = document.querySelector('input[placeholder="OPERATOR IDENTIFICATION"]').value;
+            const vehicleId = document.querySelector('input[placeholder="VEHICLE NEURAL IMPRINT"]').value;
+
+            if (!operatorId || !vehicleId) {
+                alert('Please fill all fields');
+                return;
+            }
+
+            const cost = currentSlot.price * (selectedDuration / 60);
+
+            try {
+                const response = await fetch('/confirm-reservation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        slotId: currentSlot.id,
+                        duration: selectedDuration,
+                        vehicle: vehicleId,
+                        operator: operatorId,
+                        amount: cost.toFixed(2)
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.status === "success") {
+                    // Update balance display
+                    document.querySelectorAll('.balance-display').forEach(el => {
+                        el.textContent = `BALANCE: $${result.new_balance.toFixed(2)}`;
+                    });
+
+                    // Add visual feedback
+                    document.querySelector('.reservation-container').style.animation = 'successPulse 1s ease';
+
+                    // Redirect to profile
+                    setTimeout(() => {
+                        window.location.href = '/profile.html';
+                    }, 1000);
+                } else {
+                    alert(`Reservation failed: ${result.message}`);
+                }
+            } catch (error) {
+                console.error('Reservation error:', error);
+                alert('Quantum synchronization failed - please try again');
+            }
+        });
+
+        // PayPal button rendering
+        function renderPayPalButton() {
+            const totalAmount = (currentSlot.price * (selectedDuration / 60)).toFixed(2);
+
+            paypal.Buttons({
+                createOrder: (data, actions) => actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: totalAmount,
+                            currency_code: 'USD'
+                        }
+                    }]
+                }),
+                onApprove: (data, actions) => actions.order.capture().then(async () => {
+                    const response = await fetch('/confirm-payment', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            slotId: currentSlot.id,
+                            duration: selectedDuration,
+                            amount: totalAmount,
+                            vehicle: document.getElementById('vehicleNeuralImprint').value
+                        })
+                    });
+
+                    if (response.ok) window.location.href = '/profile.html';
+                })
+            }).render('#paypal-button-container');
+        }
     </script>
 </body>
+
 </html>

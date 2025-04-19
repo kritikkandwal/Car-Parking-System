@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NeoAuth - Quantum Login</title>
+    <link href="/styles.css" rel="stylesheet">
+    <style>
+        .login-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 18, 25, 0.95);
+            padding: 2rem 3rem;
+            border: 3px solid #00f3ff;
+            border-radius: 15px;
+            width: 400px;
+            box-shadow: 0 0 50px rgba(0, 243, 255, 0.3);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg,
+                    transparent 45%,
+                    rgba(0, 243, 255, 0.1) 50%,
+                    transparent 55%);
+            animation: hologram 8s infinite linear;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .login-header h2 {
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(45deg, #00f3ff, #bc13fe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(188, 19, 254, 0.5);
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 15px 20px;
+            margin: 15px 0;
+            background: rgba(0, 243, 255, 0.05);
+            border: 2px solid #00f3ff;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #df11fc;
+            box-shadow: 0 0 20px rgba(223, 17, 252, 0.3);
+        }
+
+        .login-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cyber-login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #00f3ff 30%, #3d41af 70%);
+            border: none;
+            color: #000;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+            margin-top: 1rem;
+            z-index: 2;
+        }
+
+        .cyber-login-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.5);
+        }
+
+        @keyframes hologram {
+            0% { transform: rotate(0deg) translateZ(-1px); }
+            100% { transform: rotate(360deg) translateZ(-1px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h2>NEURAL AUTHENTICATION</h2>
+            <div style="font-size: 0.8em; color: rgba(255,255,255,0.6)">ACCESS GRID PROTOCORE v2.1</div>
+        </div>
+        <form method="POST" action="/login">
+            <input type="text" name="name" class="login-input" placeholder="OPERATOR IDENTIFICATION" required>
+            <input type="email" name="email" class="login-input" placeholder="QUANTUM MAIL ID" required>
+            <input type="password" name="password" class="login-input" placeholder="NEURAL PASSPHRASE" required>
+            <button type="submit" class="cyber-login-btn">
+                INITIALIZE SYSTEM
+            </button>
+        </form>
+    </div>
+</body>
+</html>

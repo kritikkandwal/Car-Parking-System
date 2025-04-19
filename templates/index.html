@@ -1,11 +1,13 @@
 <!-- templates/index.html (Futuristic UI) -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NeoPark - Smart Parking</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto:wght@300;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto:wght@300;500&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --neon-blue: #00f3ff;
@@ -27,7 +29,7 @@
             font-family: 'Orbitron', sans-serif;
             text-shadow: 0 0 10px var(--neon-blue);
         }
-        
+
         nav {
             position: fixed;
             top: 0;
@@ -60,6 +62,7 @@
             background: rgba(0, 243, 255, 0.1);
             text-shadow: 0 0 10px var(--neon-blue);
         }
+
         .header {
             text-align: center;
             padding: 2rem;
@@ -99,17 +102,25 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(45deg, 
-                transparent 45%, 
-                var(--neon-blue) 50%, 
-                transparent 55%);
+            background: linear-gradient(45deg,
+                    transparent 45%,
+                    var(--neon-blue) 50%,
+                    transparent 55%);
             animation: scan 4s infinite linear;
             opacity: 0.3;
         }
 
-        .slot.free { border: 2px solid var(--cyber-green); }
-        .slot.reserved { border: 2px solid var(--neon-blue); }
-        .slot.occupied { border: 2px solid var(--neon-pink); }
+        .slot.free {
+            border: 2px solid var(--cyber-green);
+        }
+
+        .slot.reserved {
+            border: 2px solid var(--neon-blue);
+        }
+
+        .slot.occupied {
+            border: 2px solid var(--neon-pink);
+        }
 
         .slot:hover {
             transform: translateY(-5px) rotateX(5deg);
@@ -136,9 +147,25 @@
             backdrop-filter: blur(10px);
         }
 
+        .balance-display {
+            position: fixed;
+            top: 5px;
+            left: 1300px;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00f3ff;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+        }
+
         @keyframes scan {
-            0% { transform: translateY(-100%) rotate(45deg); }
-            100% { transform: translateY(100%) rotate(45deg); }
+            0% {
+                transform: translateY(-100%) rotate(45deg);
+            }
+
+            100% {
+                transform: translateY(100%) rotate(45deg);
+            }
         }
 
         .recommendation-card {
@@ -158,10 +185,29 @@
             animation: pulse 2s infinite;
         }
 
+        /* Add to existing styles */
+        .particle-network {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, #0a0a12 0%, #1a1a2f 100%);
+        }
+
         @keyframes pulse {
-            0% { opacity: 0.8; }
-            50% { opacity: 0.4; }
-            100% { opacity: 0.8; }
+            0% {
+                opacity: 0.8;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+
+            100% {
+                opacity: 0.8;
+            }
         }
 
         /* New Button Styles */
@@ -182,13 +228,19 @@
         }
     </style>
 </head>
+
 <body>
+    <canvas class="particle-network" id="particleCanvas"></canvas>
     <nav>
         <ul>
-            <li><a href="#home">HOME</a></li>
-            <li><a href="#map">LIVE MAP</a></li>
+            <li><a href="/">HOME</a></li>
+            <li><a href="/live-map">LIVE MAP</a></li> <!-- Updated Link -->
             <li><a href="reservation.html">RESERVATIONS</a></li>
             <li><a href="profile.html">PROFILE</a></li>
+            <!-- In index.html and profile.html nav section -->
+            <li class="balance-display">
+                <span class="cyber-font">BALANCE: ${{ "%.2f"|format(user_balance) }}</span>
+            </li>
         </ul>
     </nav>
     <div class="header">
@@ -198,20 +250,139 @@
 
     <div class="dashboard">
         <div class="parking-grid" id="parkingGrid"></div>
-        
+
         <div class="hud-panel">
             <h3 class="cyber-font">RECOMMENDED SLOT</h3>
             <div id="recommendation" class="recommendation-card">
                 <div class="slot-type pulse">CALCULATING...</div>
             </div>
-            
+
             <h3 class="cyber-font">SELECTED SLOT</h3>
             <div id="slotDetails" class="recommendation-card"></div>
-            <button id="reserveButton" class="cyber-button" style="display: none; margin-top: 15px;">RESERVE NOW</button>
+            <button id="reserveButton" class="cyber-button" style="display: none; margin-top: 15px;">RESERVE
+                NOW</button>
         </div>
     </div>
 
     <script>
+
+        (function () {
+            const canvas = document.getElementById('particleCanvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            const mouse = { x: null, y: null, radius: 100 };
+
+            // Set canvas size
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // Particle class
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.velocityX = Math.random() * 2 - 1;
+                    this.velocityY = Math.random() * 2 - 1;
+                    this.size = Math.random() * 2 + 1;
+                    this.color = Math.random() > 0.5 ? '#00f3ff' : '#df1111';
+                }
+
+                update() {
+                    // Mouse interaction
+                    const dx = mouse.x - this.x;
+                    const dy = mouse.y - this.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < mouse.radius) {
+                        const force = (mouse.radius - distance) / mouse.radius;
+                        this.x -= dx * force * 0.1;
+                        this.y -= dy * force * 0.1;
+                    }
+
+                    // Boundary check
+                    if (this.x < 0 || this.x > canvas.width) this.velocityX *= -1;
+                    if (this.y < 0 || this.y > canvas.height) this.velocityY *= -1;
+
+                    this.x += this.velocityX;
+                    this.y += this.velocityY;
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 15;
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                }
+            }
+
+            // Create particles
+            function init() {
+                particles = [];
+                for (let i = 0; i < 70; i++) {
+                    particles.push(new Particle());
+                }
+            }
+
+            // Animation loop
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Draw connections
+                particles.forEach((particle, index) => {
+                    for (let j = index; j < particles.length; j++) {
+                        const dx = particle.x - particles[j].x;
+                        const dy = particle.y - particles[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < 100) {
+                            ctx.beginPath();
+                            ctx.strokeStyle = particle.color;
+                            ctx.globalAlpha = 1 - distance / 100;
+                            ctx.lineWidth = 0.5;
+                            ctx.moveTo(particle.x, particle.y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                });
+
+                // Update and draw particles
+                particles.forEach(particle => {
+                    particle.update();
+                    particle.draw();
+                });
+
+                requestAnimationFrame(animate);
+            }
+
+            // Mouse interactivity
+            canvas.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            });
+
+            canvas.addEventListener('click', (e) => {
+                for (let i = 0; i < 5; i++) {
+                    particles.push(new Particle());
+                }
+            });
+
+            canvas.addEventListener('mouseout', () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            // Start the system
+            init();
+            animate();
+        })();
+
         async function fetchParkingData() {
             const response = await fetch('/parking-data');
             const data = await response.json();
@@ -221,14 +392,14 @@
         function updateUI(data) {
             const grid = document.getElementById('parkingGrid');
             grid.innerHTML = '';
-            
+
             const bestSlot = data[0];
             document.getElementById('recommendation').innerHTML = `
                 <div class="cyber-font">#${bestSlot.id}</div>
                 <div class="slot-type">${bestSlot.type}</div>
                 <div class="slot-price">$${bestSlot.price}/hr</div>
             `;
-            
+
             data.forEach(slot => {
                 const slotEl = document.createElement('div');
                 slotEl.className = `slot ${slot.status}`;
@@ -239,7 +410,7 @@
         function updateUI(data) {
             const grid = document.getElementById('parkingGrid');
             grid.innerHTML = '';
-            
+
             // Update recommendations
             const bestSlot = data[0];
             document.getElementById('recommendation').innerHTML = `
@@ -258,9 +429,9 @@
                     <div class="slot-type">${slot.type}</div>
                     <div class="slot-price">$${slot.price}/hr</div>
                     <div>${slot.distance}m</div>
-                    ${slot.status === 'free' ? 
-                        '<button class="reserve-btn" onclick="reserveSlot('+slot.id+')">RESERVE</button>' : 
-                        '<div class="status">'+slot.status.toUpperCase()+'</div>'}
+                    ${slot.status === 'free' ?
+                        '<button class="reserve-btn" onclick="reserveSlot(' + slot.id + ')">RESERVE</button>' :
+                        '<div class="status">' + slot.status.toUpperCase() + '</div>'}
                 `;
                 slotEl.onclick = () => showSlotDetails(slot);
                 grid.appendChild(slotEl);
@@ -270,7 +441,7 @@
         function showSlotDetails(slot) {
             const details = document.getElementById('slotDetails');
             const reserveBtn = document.getElementById('reserveButton');
-            
+
             details.innerHTML = `
                 <div class="cyber-font">SLOT #${slot.id}</div>
                 <div>Type: ${slot.type}</div>
@@ -279,7 +450,7 @@
                 <div>Distance: ${slot.distance}m</div>
                 ${slot.covered ? '<div>Covered Parking</div>' : ''}
             `;
-            
+
             reserveBtn.style.display = slot.status === 'free' ? 'block' : 'none';
             reserveBtn.onclick = () => {
                 window.location.href = `/reservation.html?slot=${slot.id}`;
@@ -289,11 +460,20 @@
         async function reserveSlot(slotId) {
             const response = await fetch(`/reserve/${slotId}`);
             const result = await response.json();
-            if(result.status === 'success') {
+            if (result.status === 'success') {
                 alert(`Slot #${slotId} reserved until ${new Date(result.until * 1000).toLocaleTimeString()}`);
                 fetchParkingData();
             }
         }
+
+        async function refreshBalance() {
+            const response = await fetch('/get-balance');
+            const data = await response.json();
+            document.getElementById('balanceDisplay').textContent =
+                `BALANCE: $${data.balance.toFixed(2)}`;
+        }
+
+        setInterval(refreshBalance, 2000);
 
         async function fetchParkingData() {
             const response = await fetch('/parking-data');
@@ -306,4 +486,5 @@
         fetchParkingData();
     </script>
 </body>
+
 </html>

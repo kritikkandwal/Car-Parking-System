@@ -1,0 +1,46 @@
+9. Confirm Payment
+python
+Run
+Copy code
+@app.route('/confirm-payment', methods=['POST'])
+def confirm_payment():
+    expected_cost = slot['price'] * (duration/60)
+    if payment mismatch: return error
+    user_account["balance"] -= amount
+    slot['status'] = 'reserved'
+    # Add reservation
+    return success
+What it does: Validates and processes payments
+Line-by-line:
+
+Calculates expected cost
+Validates payment amount
+Updates balance
+Marks slot reserved
+Creates reservation record
+10. Confirm Reservation
+python
+Run
+Copy code
+@app.route('/confirm-reservation', methods=['POST'])
+def confirm_reservation():
+    # Validate slot
+    if invalid slot: return error
+    # Check balance
+    if insufficient funds: return error
+    # Update system
+    user_account["balance"] -= amount
+    slot['status'] = 'reserved'
+    # Create reservation
+    # Log training data
+    return success
+What it does: Finalizes reservations with validation
+Line-by-line:
+
+Validates slot existence
+Checks availability
+Verifies sufficient balance
+Updates account and slot status
+Creates reservation record
+Logs training data
+Returns reservation confirmation

@@ -1,3 +1,4 @@
+# app.py
 # app.py (AI-Enhanced)
 from flask import Flask, render_template, jsonify, request, redirect
 import random
@@ -35,12 +36,23 @@ class ParkingRecommender:
 
 recommender = ParkingRecommender()
 
-# Simulated Database with AI Features
+@app.route('/live-map')
+def live_map():
+    return render_template('live_map.html')
+
+# this part is basically making the slot 
 parking_lots = [
-    {"id": i, "status": "free", "type": random.choice(['EV', 'Compact', 'SUV']), 
-     "distance": random.randint(1, 100), "price": 5.0, "covered": random.choice([True, False]),
-     "ai_score": 0, "score_breakdown": {}}
-    for i in range(1, 21)
+    {"id": i, 
+     "status": "free", 
+     "type": random.choice(['EV', 'Compact', 'SUV']), 
+     "distance": random.randint(1, 100), 
+     "price": 5.0, 
+     "covered": random.choice([True, False]),
+     "latitude": 31.2244 + random.uniform(-0.001, 0.001),
+     "longitude": 75.7708 + random.uniform(-0.001, 0.001),
+     "ai_score": 0, 
+     "score_breakdown": {}}
+    for i in range(1, 21) #by increasing this we can iincrease the no of slot
 ]
 
 reservations = {}
@@ -87,13 +99,23 @@ def hybrid_recommendation(slots):
         }
     return sorted(slots, key=lambda x: x['score'], reverse=True)
 
-@app.route('/')
+@app.route('/')  # Route for the front page
+def frontpage():
+    return render_template('frontpage.html')
+
+@app.route('/wapis')  # this is just for profile.html to come back to index.html
+def wapis_page():
+    return render_template('index.html', user_balance=user_account["balance"])
+
+@app.route('/start')  # Route for the main page (index.html)
 def index():
     return render_template('index.html', user_balance=user_account["balance"])
 
 @app.route('/profile.html')
 def profile():
-    return render_template('profile.html', reservations=user_account["reservations"])
+    return render_template('profile.html', 
+        reservations=user_account["reservations"],
+        user_balance=user_account["balance"])
 
 @app.route('/styles.css')
 def styles():
@@ -101,7 +123,8 @@ def styles():
 
 @app.route('/reservation.html')
 def reservation():
-    return render_template('reservation.html')
+    return render_template('reservation.html',
+        user_balance=user_account["balance"])
 
 @app.route('/submit-reservation', methods=['POST'])
 def submit_reservation():
@@ -143,7 +166,7 @@ def get_parking_data():
     
     for slot in parking_lots:
         slot['price'] = calculate_dynamic_price(slot)
-        if random.random() < 0.1 and slot['status'] == 'free':
+        if random.random() < 0.01 and slot['status'] == 'free':
             slot['status'] = 'occupied'
     return jsonify(hybrid_recommendation(parking_lots))
 
@@ -167,5 +190,88 @@ def reserve(slot_id):
     
     return jsonify({"status": "failed", "message": "Insufficient balance or slot not free"})
 
+@app.route('/slot/<int:slot_id>')
+def get_slot(slot_id):
+    slot = next((s for s in parking_lots if s['id'] == slot_id), None)
+    return jsonify(slot if slot else {"error": "Slot not found"})
+
+@app.route('/confirm-payment', methods=['POST'])
+def confirm_payment():
+    data = request.json
+    slot = next(s for s in parking_lots if s['id'] == int(data['slotId']))
+    
+    # Validate payment
+    expected_cost = slot['price'] * (int(data['duration']) / 60)
+    if abs(float(data['amount']) - expected_cost) > 0.01:
+        return jsonify({"status": "failed", "message": "Payment validation failed"})
+
+    # Update system
+    user_account["balance"] -= float(data['amount'])
+    slot['status'] = 'reserved'
+    user_account["reservations"].append({
+        "slot_id": slot['id'],
+        "datetime": datetime.now().isoformat(),
+        "duration": data['duration'],
+        "vehicle": data['vehicle'],
+        "location": "Downtown Lot A",
+        "cost": float(data['amount'])
+    })
+    
+    # Updated app.py endpoint
+@app.route('/confirm-reservation', methods=['POST'])
+def confirm_reservation():
+    data = request.json
+    slot_id = int(data['slotId'])
+    duration = int(data['duration'])
+    vehicle = data['vehicle']
+    operator = data['operator']
+    amount = float(data['amount'])
+
+    slot = next((s for s in parking_lots if s['id'] == slot_id), None)
+    
+    if not slot:
+        return jsonify({"status": "failed", "message": "Invalid slot ID"})
+    
+    if slot['status'] != 'free':
+        return jsonify({"status": "failed", "message": "Slot already occupied"})
+    
+    if user_account["balance"] < amount:
+        return jsonify({"status": "failed", "message": "Insufficient quantum energy"})
+
+    # Update system state
+    user_account["balance"] -= amount
+    slot['status'] = 'reserved'
+    
+    # Create reservation record
+    reservation = {
+        "slot_id": slot_id,
+        "datetime": datetime.now().isoformat(),
+        "duration": duration,
+        "vehicle": vehicle,
+        "operator": operator,
+        "location": "Quantum Bay #7",
+        "cost": round(amount, 2)
+    }
+    user_account["reservations"].append(reservation)
+    
+    # Add to training data
+    training_data = {
+        'timestamp': datetime.now().isoformat(),
+        'type': slot['type'],
+        'distance': slot['distance'],
+        'covered': slot['covered'],
+        'duration': duration,
+        'vehicle': vehicle
+    }
+    with open('training_data.json', 'a') as f:
+        f.write(json.dumps(training_data) + '\n')
+
+    return jsonify({
+        "status": "success",
+        "new_balance": user_account["balance"],
+        "reservation": reservation
+    })
+
+    return jsonify({"status": "success", "new_balance": user_account["balance"]})
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic AI Platform</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+        }
+
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            padding: 2rem;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            padding: 1rem 3rem;
+            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #00ffff;
+            border-radius: 50px;
+            color: #00ffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button:hover {
+            background: rgba(0, 255, 255, 0.2);
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 4rem 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.2);
+        }
+
+        .ai-chat {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            border: 1px solid #00ffff;
+        }
+
+        /* Holographic Sections */
+        .hologram-section {
+            position: relative;
+            padding: 4rem 0;
+            background: linear-gradient(45deg, #001219 0%, #000b12 100%);
+            border-top: 3px solid #00f3ff;
+        }
+
+        .hologram-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .glitch-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            position: relative;
+        }
+
+        .problem-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid #00f3ff;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .problem-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.2);
+        }
+
+        .hologram-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 5px #00f3ff);
+        }
+
+        /* Process Animation */
+        .ai-process {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4rem;
+            margin: 3rem 0;
+        }
+
+        .process-step {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 50%;
+            background: rgba(0, 243, 255, 0.1);
+            width: 150px;
+            height: 150px;
+            display: flex ;
+            /* justify-content: flex-end; */
+            align-content: center;
+
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .step-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .process-arrow {
+            font-size: 2rem;
+            animation: pulse 1s infinite;
+        }
+
+        /* Cyber Stats */
+        .cyber-stats {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 1000;
+        }
+
+        .stat-bubble {
+            background: rgba(0, 243, 255, 0.1);
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            border: 1px solid #00f3ff;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: #00f3ff;
+            position: relative;
+        }
+
+        .glitch::before {
+            content: attr(data-text);
+            position: absolute;
+            left: -2px;
+            text-shadow: 2px 0 #ff00ff;
+            clip: rect(0, 900px, 0, 0);
+            animation: glitch 2s infinite linear;
+        }
+
+        /* Live Preview Animation */
+        .city-grid {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            background: #001a1a;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .animated-car {
+            position: absolute;
+            width: 40px;
+            height: 20px;
+            background: #00f3ff;
+            animation: carMove 8s infinite linear;
+        }
+
+        @keyframes carMove {
+            0% {
+                left: -50px;
+            }
+
+            100% {
+                left: 110%;
+            }
+        }
+
+        @keyframes glitch {
+            2% {
+                clip: rect(55px, 9999px, 56px, 0);
+            }
+
+            4% {
+                clip: rect(85px, 9999px, 86px, 0);
+            }
+
+            6% {
+                clip: rect(32px, 9999px, 33px, 0);
+            }
+
+            8% {
+                clip: rect(78px, 9999px, 79px, 0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="particles-js"></div>
+
+    <div class="container">
+        <section class="hero">
+            <h1 id="mainHeading">AI FUTURE</h1>
+            <p class="tagline">Next-generation intelligence platform</p>
+            <!-- <button class="cta-button" id="startButton">Initialize System</button> -->
+            <form action="{{ url_for('index') }}">
+                <button class="cta-button" id="startButton" type="submit">Initialize System</button>
+        </section>
+        <!-- <h7>About Our Car Parking System</h7><br>
+        Finding the perfect parking spot has never been easier! Our AI-powered Car Parking System is designed to provide
+        a seamless and hassle-free parking experience. Using advanced recommendation algorithms, we analyze real-time
+        data to suggest the best available parking slot based on location, availability, and user preferences. Whether
+        you're in a crowded city or a busy commercial area, our smart interface ensures that you save time and effort
+        while parking. With a user-friendly design and next-generation processing power, our system makes parking
+        efficient, secure, and stress-free. -->
+        <!-- Add after the features section and before the AI chat icon -->
+
+        <!-- Problem Statement Section -->
+        <section class="hologram-section">
+            <div class="hologram-container">
+                <div class="hologram-content">
+                    <h2 class="cyber-font">The Parking Paradox</h2>
+                    <div class="grid glitch-container">
+                        <div class="problem-card">
+                            <div class="hologram-icon">🚗💥</div>
+                            <h3>Urban Chaos</h3>
+                            <p>70% of city traffic caused by parking searches</p>
+                        </div>
+                        <div class="problem-card">
+                            <div class="hologram-icon">⏳🔥</div>
+                            <h3>Time Drain</h3>
+                            <p>Average 20 mins lost daily per driver</p>
+                        </div>
+                        <div class="problem-card">
+                            <div class="hologram-icon">🌫️💸</div>
+                            <h3>Fuel Waste</h3>
+                            <p>1M+ liters burned daily circling blocks</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Solution Showcase -->
+        <section class="neon-solution">
+            <div class="cyber-frame">
+                <h2 class="cyber-text-outline">Our Neural Network Solution</h2>
+                <div class="ai-process">
+                    <div class="process-step pulse">
+                        <div class="step-icon">🛰️</div>
+                        <h3>Satellite Tracking</h3>
+                        <p>Real-time space detection</p>
+                    </div>
+                    <div class="process-arrow">⚡</div>
+                    <div class="process-step pulse">
+                        <div class="step-icon">🧠</div>
+                        <h3>AI Prediction</h3>
+                        <p>Smart vacancy forecasting</p>
+                    </div>
+                    <div class="process-arrow">⚡</div>
+                    <div class="process-step pulse">
+                        <div class="step-icon">📱</div>
+                        <h3>Mobile Integration</h3>
+                        <p>Seamless user experience</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Overlay -->
+        <div class="cyber-stats">
+            <div class="stat-bubble">
+                <div class="stat-number glitch" data-text="98.7%">98.7%</div>
+                <div class="stat-label">Accuracy Rate</div>
+            </div>
+            <div class="stat-bubble">
+                <div class="stat-number glitch" data-text="2.5x">2.5x</div>
+                <div class="stat-label">Faster Parking</div>
+            </div>
+        </div>
+
+        <!-- Interactive Demo Preview -->
+        <!-- <section class="live-preview">
+            <h2 class="cyber-font">Witness the Future</h2>
+            <div class="hologram-preview">
+                <div class="city-grid">
+                    <div class="building"></div>
+                    <div class="road"></div>
+                    <div class="car animated-car"></div>
+                    <div class="parking-spot"></div>
+                </div>
+            </div>
+        </section> -->
+        <section class="features">
+            <div class="feature-card">
+                <h3>recommendation System</h3>
+                <p>Advanced machine learning architectures</p>
+            </div>
+            <div class="feature-card">
+                <h3>Cool Features</h3>
+                <p>Next-generation processing power</p>
+            </div>
+            <div class="feature-card">
+                <h3>Smart Interface</h3>
+                <p>Natural language interaction</p>
+            </div>
+        </section>
+
+        <div class="ai-chat">
+            <i class="fas fa-robot"></i>
+        </div>
+    </div>
+
+    <script>
+        // Particle.js config
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 500 },
+                color: { value: '#00ffff' },
+                shape: { type: 'circle' },
+                opacity: { value: 0.5 },
+                size: { value: 3 },
+                move: {
+                    enable: true,
+                    speed: 2,
+                    direction: 'none',
+                    random: false,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false,
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: {
+                    onhover: { enable: true, mode: 'repulse' },
+                    onclick: { enable: true, mode: 'push' },
+                    resize: true
+                }
+            },
+            retina_detect: true
+        });
+
+        // Add after existing JS
+        document.querySelectorAll('.problem-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                gsap.to(card, {
+                    duration: 0.3,
+                    scale: 1.05,
+                    boxShadow: '0 0 30px rgba(0,243,255,0.3)'
+                });
+            });
+
+            card.addEventListener('mouseleave', () => {
+                gsap.to(card, {
+                    duration: 0.3,
+                    scale: 1,
+                    boxShadow: '0 0 10px rgba(0,243,255,0.1)'
+                });
+            });
+        });
+
+        // Animated stats counter
+        function animateStats() {
+            gsap.from('.stat-number', {
+                duration: 2,
+                innerText: 0,
+                snap: { innerText: 1 },
+                stagger: 0.5
+            });
+        }
+
+        // Initialize animations when in view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateStats();
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+
+        document.querySelectorAll('.cyber-stats').forEach(el => observer.observe(el));
+
+        // GSAP Animations
+        gsap.from("#mainHeading", {
+            duration: 1.5,
+            y: 100,
+            opacity: 0,
+            ease: "power4.out"
+        });
+
+        gsap.from(".tagline", {
+            duration: 1.5,
+            y: 50,
+            opacity: 0,
+            delay: 0.3,
+            ease: "power4.out"
+        });
+
+        // gsap.from(".cta-button", {
+        //     duration: 1,
+        //     scale: 0.5,
+        //     opacity: 4,
+        //     delay: 0.6,
+        //     ease: "back.out(1.7)"
+        // });
+
+        // Interactive button effect
+        document.getElementById('startButton').addEventListener('click', () => {
+            gsap.to(".container", {
+                duration: 0.5,
+                opacity: 0,
+                onComplete: () => {
+                    window.location.href = 'index.html';
+                }
+            });
+        });
+
+        // Feature card animations
+        const cards = document.querySelectorAll('.feature-card');
+
+        if (cards.length >= 3) {
+            cards[0].style.opacity = "1";
+            cards[0].style.transform = "translate(0px, 50px)";
+
+            cards[1].style.opacity = "0.7";
+            cards[1].style.transform = "translate(13px, 100px)";
+
+            cards[2].style.opacity = "0.5";
+            cards[2].style.transform = "translate(27px, 158px)";
+        }
+    </script>
+</body>
+
+</html>

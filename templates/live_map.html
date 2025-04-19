@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NeoPark Phagwara - Live Parking Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        body { 
+            margin: 0; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            background: #0a0a12;
+            font-family: 'Orbitron', sans-serif;
+        }
+        #map { 
+            flex: 1; 
+            filter: hue-rotate(180deg) contrast(1.2) saturate(1.5);
+        }
+        .cyber-overlay {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem;
+            border: 2px solid #00f3ff;
+            border-radius: 8px;
+            color: #00f3ff;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+        }
+        .phagwara-legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem;
+            border: 2px solid #df11fc;
+            border-radius: 8px;
+            color: #00f3ff;
+        }
+        .phagwara-legend h3 {
+            color: #df11fc;
+            margin: 0 0 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="cyber-overlay">
+        <h2>PHAGWARA PARKING</h2>
+        <div>🆂🅻🅾🆃🆂: <span id="slotCount">0</span>/20</div>
+        <div>🆄🅿🅳🅰🆃🅴🅳: <span id="lastUpdate">${new Date().toLocaleTimeString('en-IN')}</span></div>
+    </div>
+
+    <div class="phagwara-legend">
+        <h3>parking slot</h3>
+        <div>🟢 Free</div>
+        <div>🔵 Reserved</div>
+        <div>🔴 Occupied</div>
+    </div>
+
+    <div id="map"></div>
+    
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Phagwara coordinates (31.2244° N, 75.7708° E)
+        const PHAGWARA_CENTER = [31.2244, 75.7708];
+        const map = L.map('map').setView(PHAGWARA_CENTER, 16);
+        
+        // Localized tile layer with Punjabi labeling
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© <a href="#" style="color:#df11fc">ਨੀਓਪਾਰਕ ਪ੍ਰਣਾਲੀ</a>'
+        }).addTo(map);
+
+        // Custom parking icons
+        function createPunjabiIcon(status) {
+            return L.divIcon({
+                className: `parking-marker ${status}`,
+                html: `<div class="marker-pulse">${status === 'free' ? 'ਖਾਲੀ' : status === 'reserved' ? 'ਰਿਜ਼ਰਵ' : 'ਭਰਿਆ'}</div>`,
+                iconSize: [40, 40],
+            });
+        }
+
+        // Real-time parking data
+        let parkingMarkers = new L.FeatureGroup();
+        
+        async function updateParkingData() {
+            try {
+                const response = await fetch('/parking-data');
+                const slots = await response.json();
+                
+                parkingMarkers.clearLayers();
+                let availableSlots = 0;
+
+                slots.forEach(slot => {
+                    const marker = L.marker([slot.latitude, slot.longitude], {
+                        icon: createPunjabiIcon(slot.status)
+                    }).bindPopup(`
+                        <div class="cyber-popup">
+                            <h3>ਸਲਾਟ #${slot.id}</h3>
+                            <p>ਕਿਸਮ: ${slot.type}</p>
+                            <p>ਕੀਮਤ: ₹${slot.price}/ਘੰਟਾ</p>
+                            <p>ਦੂਰੀ: ${slot.distance}ਮੀਟਰ</p>
+                            ${slot.status === 'free' ? 
+                                `<button onclick="window.location.href='/reservation.html?slot=${slot.id}'" 
+                                 style="background:#df11fc; border:none; padding:5px; margin-top:10px; cursor:pointer;">
+                                 ਰਿਜ਼ਰਵ ਕਰੋ
+                                </button>` : ''}
+                        </div>
+                    `);
+                    parkingMarkers.addLayer(marker);
+                    if(slot.status === 'free') availableSlots++;
+                });
+
+                map.addLayer(parkingMarkers);
+                document.getElementById('slotCount').textContent = availableSlots;
+                document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('en-IN');
+                
+            } catch (error) {
+                console.error('Data sync failed:', error);
+                document.getElementById('lastUpdate').textContent = 'ਤਰੁੱਟੀ';
+            }
+        }
+
+        // Add user location tracking
+        map.locate({setView: false, maxZoom: 16});
+        map.on('locationfound', e => {
+            L.marker([e.latitude, e.longitude], {
+                icon: L.divIcon({
+                    className: 'user-location',
+                    html: '📍 ਤੁਸੀਂ ਇੱਥੇ ਹੋ',
+                    iconSize: [40, 40]
+                })
+            }).addTo(map);
+        });
+
+        // Initial load
+        updateParkingData();
+        // Update every 15 seconds
+        setInterval(updateParkingData, 15000);
+    </script>
+</body>
+</html>

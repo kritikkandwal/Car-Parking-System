@@ -1,0 +1,105 @@
+The recommendation system consists of two key functions:
+
+hybrid_recommendation(slots) – Combines fuzzy logic and AI-based predictions.
+Machine learning model (ParkingRecommender) – Uses a Gradient Boosting Regressor to improve recommendations.
+Hybrid Recommendation Function
+python
+Copy
+Edit
+def hybrid_recommendation(slots):
+    current_hour = datetime.now().hour
+    for slot in slots:
+        fuzzy_score = 0
+        if slot['status'] == 'free': fuzzy_score += 50
+        fuzzy_score -= slot['distance'] * 0.5
+        if slot['covered']: fuzzy_score += 20
+        
+        if recommender.is_trained:
+            input_data = pd.DataFrame([{
+                'type': slot['type'],
+                'distance': slot['distance'],
+                'covered': slot['covered'],
+                'hour': current_hour,
+                'timestamp': datetime.now().isoformat()
+            }])
+            X = recommender.preprocessor.transform(input_data)
+            ai_score = recommender.model.predict(X)[0]
+        else:
+            ai_score = 0
+            
+        slot['score'] = max(0, (fuzzy_score * 0.4) + (ai_score * 0.6))
+        slot['score_breakdown'] = {
+            'fuzzy': fuzzy_score,
+            'ai': ai_score,
+            'combined': slot['score']
+        }
+    return sorted(slots, key=lambda x: x['score'], reverse=True)
+How It Works
+Fuzzy Logic Scoring:
+
+Assigns 50 points if the parking slot is free.
+Deducts 0.5 * distance points (farther spots are penalized).
+Adds 20 points if the slot is covered (preferable for users).
+AI Model Scoring:
+
+If the AI model is trained, it predicts the best parking duration based on:
+type of parking slot (EV, Compact, SUV)
+distance from the user
+Whether the slot is covered
+hour of the day
+The AI model is a Gradient Boosting Regressor, a machine learning model that improves predictions iteratively.
+Final Score Calculation:
+
+Fuzzy Score contributes 40% of the final score.
+AI Prediction contributes 60% of the final score.
+Slots are sorted in descending order of score to recommend the best parking options.
+Training the AI Model
+python
+Copy
+Edit
+class ParkingRecommender:
+    def __init__(self):
+        self.model = GradientBoostingRegressor(n_estimators=100, random_state=42)
+        self.preprocessor = ColumnTransformer(
+            transformers=[
+                ('num', StandardScaler(), ['distance', 'hour', 'covered']),
+                ('cat', OneHotEncoder(), ['type'])
+            ])
+        self.is_trained = False
+
+    def train(self, data):
+        df = pd.DataFrame(data)
+        df['hour'] = pd.to_datetime(df['timestamp']).dt.hour
+        X = self.preprocessor.fit_transform(df[['type', 'distance', 'covered', 'hour']])
+        y = df['duration']
+        self.model.fit(X, y)
+        self.is_trained = True
+        joblib.dump(self.model, 'ai_model.pkl')
+        
+        
+The model learns from past reservations stored in training_data.json.
+It predicts how long a user might need a parking spot based on historical data.
+The trained model is saved using joblib, allowing it to be reused.
+Why This Approach?
+✅ Combines AI + Fuzzy Logic: Makes intelligent recommendations even when AI isn't fully trained.
+✅ Adapts to User Behavior: The AI model gets better over time as more reservations are made.
+✅ Dynamic Pricing & Real-Time Recommendations: The system ensures optimal parking choices for users.
+
+
+🔹 1. Fuzzy Logic-Based Scoring (Rule-Based)
+Assigns 50 points if the slot is free.
+Penalizes distance by deducting 0.5 * distance.
+Rewards covered slots with +20 points.
+🔹 2. AI Model-Based Scoring (Machine Learning)
+Uses a Gradient Boosting Regressor to predict parking duration.
+Factors in slot type, distance, covered status, and time of day.
+Model is trained on real reservation data (training_data.json).
+Final Score Calculation:
+🔹 40% weight from Fuzzy Score
+🔹 60% weight from AI Prediction Score
+🔹 The system sorts slots from highest to lowest score for recommendation.
+
+🚀 Why Hybrid?
+✅ Works even without AI training (Fuzzy Logic can still provide recommendations).
+✅ Improves over time as AI learns from real-world parking data.
+✅ Balances rule-based logic and real-world user behavior.

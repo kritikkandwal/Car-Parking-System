@@ -1,0 +1,31 @@
+2. Simulated Database
+python
+Run
+Copy code
+parking_lots = [
+    {"id": i, 
+     "status": "free", 
+     "type": random.choice(['EV', 'Compact', 'SUV']), 
+     "distance": random.randint(1, 100), 
+     "price": 5.0, 
+     "covered": random.choice([True, False]),
+     "latitude": 31.2244 + random.uniform(-0.001, 0.001),
+     "longitude": 75.7708 + random.uniform(-0.001, 0.001),
+     "ai_score": 0, 
+     "score_breakdown": {}}
+    for i in range(1, 21)
+]
+
+
+
+
+What it does: Creates mock parking lot data with geospatial variation
+Line-by-line:
+
+Generates 20 parking slots with:
+Random slot types (EV/Compact/SUV)
+Random distances (1-100 units)
+Random covered status
+Geo-coordinates near 31.2244N, 75.7708E with minor variations
+Initial price of $5.0
+Placeholders for AI recommendation scores

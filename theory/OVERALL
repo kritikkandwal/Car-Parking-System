@@ -1,0 +1,250 @@
+1. ParkingRecommender Class
+python
+Run
+Copy code
+class ParkingRecommender:
+    def __init__(self):
+        self.model = GradientBoostingRegressor(n_estimators=100, random_state=42)
+        self.preprocessor = ColumnTransformer(
+            transformers=[
+                ('num', StandardScaler(), ['distance', 'hour', 'covered']),
+                ('cat', OneHotEncoder(), ['type'])
+            ])
+        self.is_trained = False
+
+    def train(self, data):
+        df = pd.DataFrame(data)
+        df['hour'] = pd.to_datetime(df['timestamp']).dt.hour
+        X = self.preprocessor.fit_transform(df[['type', 'distance', 'covered', 'hour']])
+        y = df['duration']
+        self.model.fit(X, y)
+        self.is_trained = True
+        joblib.dump(self.model, 'ai_model.pkl')
+What it does: Implements ML-powered parking recommendations
+Line-by-line:
+
+__init__:
+Initializes Gradient Boosting Regressor with 100 trees
+Creates data preprocessor: normalizes numerical features, one-hot encodes parking type
+is_trained flag tracks model training status
+train:
+Converts raw data to DataFrame
+Extracts hour from timestamp
+Preprocesses features (scaling + encoding)
+Trains model to predict parking duration
+Saves trained model to file
+Sets training flag
+2. Simulated Database
+python
+Run
+Copy code
+parking_lots = [
+    {"id": i, 
+     "status": "free", 
+     "type": random.choice(['EV', 'Compact', 'SUV']), 
+     "distance": random.randint(1, 100), 
+     "price": 5.0, 
+     "covered": random.choice([True, False]),
+     "latitude": 31.2244 + random.uniform(-0.001, 0.001),
+     "longitude": 75.7708 + random.uniform(-0.001, 0.001),
+     "ai_score": 0, 
+     "score_breakdown": {}}
+    for i in range(1, 21)
+]
+What it does: Creates mock parking lot data with geospatial variation
+Line-by-line:
+
+Generates 20 parking slots with:
+Random slot types (EV/Compact/SUV)
+Random distances (1-100 units)
+Random covered status
+Geo-coordinates near 31.2244N, 75.7708E with minor variations
+Initial price of $5.0
+Placeholders for AI recommendation scores
+3. Dynamic Pricing
+python
+Run
+Copy code
+def calculate_dynamic_price(slot):
+    hour = datetime.now().hour
+    base_price = 5.0
+    if 7 <= hour < 9 or 17 <= hour < 19:
+        base_price *= 1.5  # Rush hour surcharge
+    if slot['covered']:
+        base_price *= 1.2  # Covered parking premium
+    return round(base_price + (0.1 * slot['distance']), 2)
+What it does: Implements surge pricing based on time/distance
+Line-by-line:
+
+Gets current hour
+Base price $5.00
++50% during rush hours (7-9am, 5-7pm)
++20% for covered slots
+Adds $0.10 per distance unit
+Rounds to 2 decimal places
+4. Hybrid Recommendation
+python
+Run
+Copy code
+def hybrid_recommendation(slots):
+    current_hour = datetime.now().hour
+    for slot in slots:
+        fuzzy_score = 0
+        if slot['status'] == 'free': fuzzy_score += 50
+        fuzzy_score -= slot['distance'] * 0.5
+        if slot['covered']: fuzzy_score += 20
+        
+        if recommender.is_trained:
+            # AI prediction
+            input_data = pd.DataFrame([...])
+            X = recommender.preprocessor.transform(input_data)
+            ai_score = recommender.model.predict(X)[0]
+        else:
+            ai_score = 0
+            
+        slot['score'] = max(0, (fuzzy_score * 0.4) + (ai_score * 0.6))
+        # Stores score components
+    return sorted(slots, key=lambda x: x['score'], reverse=True)
+What it does: Combines rule-based + ML recommendations
+Line-by-line:
+
+For each parking slot:
+Fuzzy Logic:
++50 for availability
+-0.5 per distance unit
++20 for covered
+AI Prediction:
+Uses trained model to predict "goodness" score
+Only if model is trained
+Combination:
+40% fuzzy score + 60% AI score
+Ensures non-negative score
+Returns slots sorted by combined score
+5. Submit Reservation
+python
+Run
+Copy code
+@app.route('/submit-reservation', methods=['POST'])
+def submit_reservation():
+    data = request.json
+    slot_id = int(data['slotId'])
+    slot = next(s for s in parking_lots if s['id'] == slot_id)
+    # Log training data
+    with open('training_data.json', 'a') as f:
+        f.write(json.dumps(training_data) + '\n')
+    # Create reservation
+    user_account["reservations"].append(reservation)
+    return jsonify({"status": "success"})
+What it does: Handles reservation submissions
+Line-by-line:
+
+Receives JSON payload
+Extracts slot ID
+Finds matching parking slot
+Logs reservation details for ML training
+Creates reservation record in user account
+Returns success response
+6. Parking Data Endpoint
+python
+Run
+Copy code
+@app.route('/parking-data')
+def get_parking_data():
+    try:
+        # Train model if enough data
+        if len(data) > 50: recommender.train(data)
+    # Update prices/statuses
+    for slot in parking_lots:
+        slot['price'] = calculate_dynamic_price(slot)
+        if random.random() < 0.01: slot['status'] = 'occupied'
+    return jsonify(hybrid_recommendation(parking_lots))
+What it does: Provides real-time parking data
+Line-by-line:
+
+Checks for training data
+Trains model when 50+ samples available
+Updates prices dynamically
+Randomly changes some slots to occupied (1% chance)
+Returns recommended slots as JSON
+7. Reserve Endpoint
+python
+Run
+Copy code
+@app.route('/reserve/<int:slot_id>', methods=['POST'])
+def reserve(slot_id):
+    if slot_id invalid: return error
+    slot = parking_lots[slot_id - 1]
+    if slot free and balance sufficient:
+        user_account["balance"] -= slot['price']
+        slot['status'] = 'reserved'
+        reservations[slot_id] = time.time() + 300  # 5min reservation
+        return success
+    else: return error
+What it does: Handles slot reservations
+Line-by-line:
+
+Validates slot ID
+Checks slot availability and user balance
+Deducts payment
+Marks slot as reserved
+Sets 5-minute reservation window
+Returns updated balance
+8. Slot Endpoint
+python
+Run
+Copy code
+@app.route('/slot/<int:slot_id>')
+def get_slot(slot_id):
+    slot = next((s for s in parking_lots if s['id'] == slot_id), None)
+    return jsonify(slot or error)
+What it does: Provides individual slot details
+Line-by-line:
+
+Searches for slot by ID
+Returns slot data or "not found" error
+9. Confirm Payment
+python
+Run
+Copy code
+@app.route('/confirm-payment', methods=['POST'])
+def confirm_payment():
+    expected_cost = slot['price'] * (duration/60)
+    if payment mismatch: return error
+    user_account["balance"] -= amount
+    slot['status'] = 'reserved'
+    # Add reservation
+    return success
+What it does: Validates and processes payments
+Line-by-line:
+
+Calculates expected cost
+Validates payment amount
+Updates balance
+Marks slot reserved
+Creates reservation record
+10. Confirm Reservation
+python
+Run
+Copy code
+@app.route('/confirm-reservation', methods=['POST'])
+def confirm_reservation():
+    # Validate slot
+    if invalid slot: return error
+    # Check balance
+    if insufficient funds: return error
+    # Update system
+    user_account["balance"] -= amount
+    slot['status'] = 'reserved'
+    # Create reservation
+    # Log training data
+    return success
+What it does: Finalizes reservations with validation
+Line-by-line:
+
+Validates slot existence
+Checks availability
+Verifies sufficient balance
+Updates account and slot status
+Creates reservation record
+Logs training data
+Returns reservation confirmation

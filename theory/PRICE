@@ -1,0 +1,116 @@
+coding part
+@app.route('/reserve/<int:slot_id>', methods=['POST'])
+def reserve(slot_id):
+    if slot_id < 1 or slot_id > len(parking_lots):
+        return jsonify({"status": "failed", "message": "Invalid slot ID"})
+    
+    slot = parking_lots[slot_id - 1]
+    
+    if slot['status'] == 'free' and user_account["balance"] >= slot['price']:
+        # Subtract the parking slot's price from the user's balance
+        user_account["balance"] -= slot['price']
+        slot['status'] = 'reserved'
+        reservations[slot_id] = time.time() + 300
+        
+        return jsonify({
+            "status": "success",
+            "until": reservations[slot_id],
+            "new_balance": user_account["balance"]
+        })
+    
+    return jsonify({"status": "failed", "message": "Insufficient balance or slot not free"})
+
+
+
+
+
+Step-by-Step Explanation
+Endpoint Declaration:
+
+Route: The endpoint is defined as /reserve/<int:slot_id>, meaning it expects an integer parameter slot_id in the URL.
+Method: It accepts POST requests, which are used to make changes (i.e., reserve a slot).
+Slot ID Validation:
+
+Validation Check:
+python
+Copy
+Edit
+if slot_id < 1 or slot_id > len(parking_lots):
+This condition ensures that the provided slot_id is within the valid range of available parking slots.
+Invalid ID Handling:
+If the slot_id is out of range, the function immediately returns a JSON response indicating failure:
+python
+Copy
+Edit
+return jsonify({"status": "failed", "message": "Invalid slot ID"})
+Retrieving the Parking Slot:
+
+Slot Selection:
+python
+Copy
+Edit
+slot = parking_lots[slot_id - 1]
+The code fetches the corresponding parking slot from the parking_lots list. Note that it subtracts 1 because list indexing starts at 0.
+Checking Slot Availability and User Balance:
+
+Availability & Balance Check:
+python
+Copy
+Edit
+if slot['status'] == 'free' and user_account["balance"] >= slot['price']:
+The slot must be marked as free (i.e., available for reservation).
+The user must have a balance equal to or greater than the slot's price.
+Failure Case:
+If either condition fails, the function returns a JSON response indicating failure:
+python
+Copy
+Edit
+return jsonify({"status": "failed", "message": "Insufficient balance or slot not free"})
+Deducting the Slot Price from User Balance:
+
+Deduction Operation:
+python
+Copy
+Edit
+user_account["balance"] -= slot['price']
+This line subtracts the parking slot’s price directly from the user's current balance.
+Key Point:
+user_account["balance"] holds the current balance, and after this operation, it reflects the updated balance post-deduction.
+Updating Slot Status:
+
+Marking as Reserved:
+python
+Copy
+Edit
+slot['status'] = 'reserved'
+After deducting the price, the slot is no longer available, so its status is updated to reserved.
+Setting Reservation Timeout:
+
+Timeout Setup:
+python
+Copy
+Edit
+reservations[slot_id] = time.time() + 300
+The code records a reservation expiry time by taking the current time and adding 300 seconds (i.e., a 5-minute reservation window).
+Returning the Response:
+
+Success Response:
+python
+Copy
+Edit
+return jsonify({
+    "status": "success",
+    "until": reservations[slot_id],
+    "new_balance": user_account["balance"]
+})
+A JSON response is sent back to the client, confirming the reservation.
+It includes:
+"status": "success" – Indicating that the reservation was successful.
+"until": reservations[slot_id] – The timestamp until which the reservation is valid.
+"new_balance": user_account["balance"] – The updated balance after the slot’s price has been deducted.
+Summary
+Validation: The code first validates the slot ID.
+Condition Checks: It verifies that the selected slot is free and the user has enough balance.
+Deduction: The slot's price is deducted directly from the user's balance (user_account["balance"]).
+State Update: The slot is marked as reserved, and a timeout is set.
+Response: Finally, a JSON response is returned showing the reservation details and the new balance.

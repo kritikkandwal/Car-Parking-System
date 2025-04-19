@@ -1,0 +1,50 @@
+coding part
+
+def calculate_dynamic_price(slot):
+    hour = datetime.now().hour  # Get the current hour
+    base_price = 5.0  # Default base price for a parking slot
+
+    # Increase price during peak hours (morning 7-9 AM, evening 5-7 PM)
+    if 7 <= hour < 9 or 17 <= hour < 19:
+        base_price *= 1.5  
+
+    # Add extra cost for covered parking slots
+    if slot['covered']:
+        base_price *= 1.2  
+
+    # Final price includes a distance-based surcharge (0.1 per unit distance)
+    return round(base_price + (0.1 * slot['distance']), 2)
+
+
+
+💡 How It Works
+Base price starts at $5.00 for all parking slots.
+Peak hours surcharge:
+If the current time is 7 AM - 9 AM or 5 PM - 7 PM, the base price is increased by 50% (base_price *= 1.5).
+This reflects high demand during rush hours.
+Covered parking surcharge:
+If the slot is covered, an additional 20% fee is applied (base_price *= 1.2).
+Covered slots are considered premium as they protect vehicles from weather.
+Distance-based surcharge:
+An extra $0.10 per distance unit is added (0.1 * slot['distance']).
+This encourages users to pick closer spots, balancing supply and demand.
+Final price is rounded to 2 decimal places and returned.
+🚀 Example Calculation
+Assume:
+
+Current time: 8 AM (peak hours)
+Slot is covered
+Slot distance = 30
+Step-by-step price calculation:
+
+Base price = $5.00
+Peak hour increase (×1.5) → $5.00 × 1.5 = $7.50
+Covered slot increase (×1.2) → $7.50 × 1.2 = $9.00
+Distance surcharge (30 × $0.10) → $9.00 + $3.00 = $12.00
+🔹 Final dynamic price = $12.00
+
+⚡ Why Use Dynamic Pricing?
+✅ Maximizes revenue by charging more during high-demand periods.
+✅ Encourages off-peak parking by keeping prices lower outside rush hours.
+✅ Balances user preference for premium (covered) vs. regular slots.
+✅ Promotes closer parking selection by making far spots slightly cheaper.
