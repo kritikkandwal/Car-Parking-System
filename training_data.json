@@ -42,3 +42,9 @@
 {"timestamp": "2025-03-12T20:33:27.068759", "type": "SUV", "distance": 91, "covered": true, "duration": 120, "vehicle": "fpo4"}
 {"timestamp": "2025-03-15T11:30:58.313244", "type": "EV", "distance": 1, "covered": true, "duration": 60, "vehicle": "fioweu"}
 {"timestamp": "2025-03-22T04:57:18.458779", "type": "Compact", "distance": 5, "covered": true, "duration": 60, "vehicle": "uk12b9208"}
+{"timestamp": "2025-05-12T23:34:04.750416", "type": "SUV", "distance": 34, "covered": true, "duration": 60, "vehicle": "lih"}
+{"timestamp": "2025-05-13T15:36:35.451955", "type": "EV", "distance": 8, "covered": true, "duration": 60, "vehicle": "uk12b 9208"}
+{"timestamp": "2025-05-22T00:05:14.076754", "type": "Compact", "distance": 3, "covered": true, "duration": 60, "vehicle": "UK12B-9208"}
+{"timestamp": "2025-05-22T00:12:52.318632", "type": "EV", "distance": 4, "covered": true, "duration": 60, "vehicle": "UK12B-9208"}
+{"timestamp": "2025-05-22T00:15:35.223967", "type": "Compact", "distance": 8, "covered": true, "duration": 120, "vehicle": "UK12B-9208"}
+{"timestamp": "2025-05-22T00:17:57.118452", "type": "SUV", "distance": 13, "covered": true, "duration": 30, "vehicle": "UK12B-9208"}

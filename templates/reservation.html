@@ -14,6 +14,46 @@
             --hologram-alpha: 0.65;
         }
 
+        /* Fix button alignment */
+        .reservation-form {
+            padding: 0;
+            padding-bottom: 0.5rem;
+            /* Remove any existing padding */
+        }
+
+        .cyber-button {
+            margin: 0.5rem 0 0 0;
+            /* Reset margins */
+            width: calc(100% - 2px);
+            /* Account for border/padding */
+            transform: translateX(0);
+            /* Reset any transforms */
+            box-sizing: border-box;
+            /* Include padding in width */
+        }
+
+        /* Fix container alignment */
+        .reservation-container {
+            padding: 2rem;
+            /* Consistent padding */
+        }
+
+        /* Ensure consistent button alignment */
+        #doneButton,
+        #paypal-button-container {
+            width: 100%;
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        /* Remove any unexpected transforms */
+        .time-bubble:hover {
+            transform: translateY(-5px) !important;
+            /* Maintain hover effect */
+        }
+
+
+
         body {
             background: radial-gradient(circle at center, #001219 0%, #000 100%);
             overflow-x: hidden;
@@ -121,7 +161,7 @@
 
         .reservation-form {
             display: grid;
-            gap: 9.5px;
+            gap: 5px;
             position: relative;
             z-index: 2;
         }
@@ -148,7 +188,7 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1.5rem;
-            margin: 2rem 0;
+            margin: 1rem 0;
         }
 
         .time-bubble {
@@ -189,6 +229,54 @@
             border-color: transparent;
             box-shadow: 0 0 40px rgba(188, 19, 254, 0.4);
             transform: scale(1.05);
+        }
+
+        /* Update existing cyber-button styles */
+        .cyber-button {
+            margin-top: 1rem;
+            padding: 1rem 1.2rem;
+            /* Match PayPal's button proportions */
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, var(--neon-blue) 30%, #3d41af 70%);
+            border: none;
+            border-radius: 5px;
+            color: #000;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            width: 100%;
+            /* Match PayPal button width */
+            display: block;
+            /* Make it block-level like PayPal */
+        }
+
+        /* Enhanced hover effects */
+        .cyber-button:hover {
+            transform: scale(1.02);
+            background: linear-gradient(45deg, #006eff 30%, #0011af 70%);
+            box-shadow: 0 0 35px rgba(0, 110, 255, 0.5);
+        }
+
+        /* Focus state for accessibility */
+        .cyber-button:focus {
+            outline: 2px solid var(--neon-blue);
+            outline-offset: 2px;
+        }
+
+        /* Ensure PayPal button container matches styling */
+        #paypal-button-container {
+            margin-top: 1rem;
+            border-radius: 5px;
+            padding: 8px 0;
+            overflow: hidden;
+        }
+
+        /* Adjust the Done button positioning */
+        #doneButton {
+            margin-bottom: 1rem;
+            /* Add space between buttons */
         }
 
         .time-bubble.selected::after {
@@ -307,6 +395,8 @@
             </div>
             <button type="button" id="doneButton" class="cyber-button">DONE</button>
             <div id="paypal-button-container"></div>
+
+
         </form>
     </div>
 
